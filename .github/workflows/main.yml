@@ -25,6 +25,12 @@ jobs:
         uses: ./.github/actions/deployment
         with:
           deployment_id: github.event.deployment.id  
+      - name: update deploy status
+        if: always()
+        uses: unacast/actions-github-deployment-status@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }} 
       - name: Slack Notification Success Stage
         if: success() && github.event.deployment.environment == 'stage'
         uses: rtCamp/action-slack-notify@master
