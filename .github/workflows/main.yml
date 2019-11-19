@@ -53,4 +53,14 @@ jobs:
           SLACK_TITLE: Post Title
           SLACK_USERNAME: rtCamp
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        
+      - name: Slack Notification Failure
+        if: failure() 
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: '#3278BD'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Deployment failed'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
