@@ -1,0 +1,12 @@
+name: 'Deployments'
+description: 'Deployments'
+inputs:
+  deployment_id:
+    description: 'deploy id'
+    required: true
+outputs:
+  completed: # id of output
+    description: 'The completion'
+runs:
+  using: 'node12'
+  main: 'index.js'
