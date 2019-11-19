@@ -12,7 +12,7 @@ jobs:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
           HEROKU_APP_NAME: "cg-example-deploy-stage"
           DEPLOY_URL: "https://test-app-cg-deploy.herokuapp.com/"
-        if: github.event.deployment.environment == 'staging'
+        if: github.event.deployment.environment == 'stage'
         run: git push -f https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
       - name: Deploy to Heroku Production
         env:
@@ -22,7 +22,7 @@ jobs:
         if: github.event.deployment.environment == 'production'
         run: git push -f https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
       - name: Slack Notification Success Stage
-        if: success() && github.event.deployment.environment == 'staging'
+        if: success() && github.event.deployment.environment == 'stage'
         uses: rtCamp/action-slack-notify@master
         env:
           SLACK_CHANNEL: general
