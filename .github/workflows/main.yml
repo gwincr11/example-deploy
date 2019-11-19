@@ -1,4 +1,4 @@
-name: Deploy Staging
+name: Deploy
 
 on: [deployment]
 
@@ -11,11 +11,36 @@ jobs:
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
           HEROKU_APP_NAME: "cg-example-deploy-stage"
-        if: github.event.deployment.environment == 'staging'
-        run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
+          DEPLOY_URL: "https://test-app-cg-deploy.herokuapp.com/"
+        if: github.event.deployment.environment == 'stage'
+        run: git push -f https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
       - name: Deploy to Heroku Production
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
           HEROKU_APP_NAME: "test-app-cg-deploy"
+          DEPLOY_URL: "https://cg-example-deploy-stage.herokuapp.com/"
         if: github.event.deployment.environment == 'production'
-        run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
+        run: git push -f https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
+      - name: Slack Notification Success Stage
+        if: success() && github.event.deployment.environment == 'stage'
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: '#3278BD'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Deployed to https://cg-example-deploy-stage.herokuapp.com/'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Slack Notification Success Prod
+        if: success() && github.event.deployment.environment == 'production'
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: '#3278BD'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Deployed to https://test-app-cg-deploy.herokuapp.com/'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        
